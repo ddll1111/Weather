@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.coolweather.app.db.CollWeatherOpenHelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class CoolWeatherDB {
 //数据库名
@@ -32,9 +34,18 @@ public synchronized static CoolWeatherDB getInstance(Context context){
 //将Province实例保存到数据库
 	public void saveProvince(Province province){
 		if(province!=null){
+		/*
 			String in = "insert into province(province_name,province_code) values(" 
 				+province.getProvince_name() +"," + province.getProvince_code() + ")";
+			Log.d("saveProvince ", in);	
 			db.execSQL(in);
+			*/
+			
+			ContentValues values = new ContentValues();
+			values.put("province_name", province.getProvince_name());
+			values.put("province_code", province.getProvince_code());
+			db.insert("province", null, values);
+	
 		}
 	}
 //从数据库读取全国所有省份信息
@@ -56,9 +67,17 @@ public synchronized static CoolWeatherDB getInstance(Context context){
 //将city实例保存到数据库
 	public void saveCity(City city){
 		if(city!=null){
+			/*
 			String sql = "insert into city(city_name,city_code,province_id) values("
 					+ city.getCity_name() +","+city.getCity_code() + "," + city.getProvince_id() +")";
 			db.execSQL(sql);
+			*/
+			ContentValues values = new ContentValues();
+			values.put("city_name",city.getCity_name());
+			values.put("city_code", city.getCity_code());
+			values.put("province_id", city.getProvince_id());
+			db.insert("city", null, values);
+			
 		}
 		
 	}
@@ -66,7 +85,8 @@ public synchronized static CoolWeatherDB getInstance(Context context){
 	public List<City> loadCity(int province_id){
 		List<City> list = new ArrayList<City>();
 	
-		Cursor cursor = db.rawQuery("select * from city where province_Id =?", new String[] {province_id+""});
+		Cursor cursor = db.rawQuery("select * from city where province_id =?", new String[] {province_id+""});
+		Log.d("load city province id =",province_id+"");
 		if(cursor.moveToFirst()){
 		do{
 			City city = new City();
@@ -82,9 +102,16 @@ public synchronized static CoolWeatherDB getInstance(Context context){
 //将County实例保存到数据库
 	public void saveCounty(County county){
 		if(county!=null){
+			/*
 			String sql = "insert into county(county_name,county_code,city_id) values("
 					+county.getCounty_name() +"," + county.getCounty_code() + "," + county.getCity_id() + ")";
 			db.execSQL(sql);
+			*/
+			ContentValues values = new ContentValues();
+			values.put("county_name",county.getCounty_name());
+			values.put("county_code", county.getCounty_code());
+			values.put("city_id",county.getCity_id());
+			db.insert("county", null, values);
 		}
 	}
 //获取城市下所有县列表

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import com.coolweather.app.R;
+import com.coolweather.app.service.AutoUpdateService;
 import com.coolweather.app.util.HttpCallBackListener;
 import com.coolweather.app.util.HttpUitl;
 import com.coolweather.app.util.Utility;
@@ -120,6 +121,8 @@ public void showWeather(){
 //	suggest.setText(prefs.getString("suggest", ""));
 	weatherinfolayout.setVisibility(View.VISIBLE);
 	citynametext.setVisibility(View.VISIBLE);
+	Intent i = new Intent (this,AutoUpdateService.class);
+	startActivity(i);  //启动自动更新服务
 }
 //查询天气代号对应的天气
 public void queryWeatherInfo(String weathercode){

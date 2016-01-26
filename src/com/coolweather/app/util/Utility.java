@@ -126,6 +126,7 @@ public class Utility {
 		  JSONObject subobject = jsonarray.getJSONObject(0);//基础数据
 		  JSONObject basic = subobject.getJSONObject("basic");
 		  String cityname=basic.getString("city");//城市 ok
+		  
 		  Log.d("Utility-handleweatherreponse",cityname);
 		  JSONObject update = basic.getJSONObject("update");
 		  String loc =update.getString("loc");//更新时间 ok

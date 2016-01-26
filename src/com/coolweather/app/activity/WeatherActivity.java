@@ -36,6 +36,7 @@ private TextView temp2text;//温度2
 private TextView currentdate;//当前日期
 private  Button switchcity;//切换城市按钮
 private Button refreshweather ;//更新天气
+private Button getlocation;//获取地址
 private TextView suggest ;//建议
 @Override
 protected void onCreate(Bundle savedInstanceState){
@@ -90,6 +91,10 @@ public void onClick(View v) {
 		*/
 		String countyname=prefs.getString("cityname", "");
 		if(!TextUtils.isEmpty(countyname)){
+			 if(countyname.equals("上城")||countyname.equals("下城")||countyname.equals("江干")||countyname.equals("拱墅")||countyname.equals("西湖")||countyname.equals("滨江"))
+			  {
+				 countyname = "杭州";
+			  }
 			queryWeathername(countyname);
 		}
 		
@@ -101,9 +106,13 @@ public void onClick(View v) {
 //查询县名称对应的天气代号
 public void queryWeathername(String countyname){
 	try {
-
+		 if(countyname.equals("上城")||countyname.equals("下城")||countyname.equals("江干")||countyname.equals("拱墅")||countyname.equals("西湖")||countyname.equals("滨江"))
+		  {
+			 countyname = "杭州";
+		  }
 		String address = "https://api.heweather.com/x3/weather?key=8e7c3a0b82b54b00b2a6d536de0e64ef&city="+URLEncoder.encode(new String ( countyname.toString().getBytes("UTF-8") ), "UTF-8") ;
 		queryFromServer(address,"countyname");
+		Log.d("queryweather", countyname);
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -112,7 +121,12 @@ public void queryWeathername(String countyname){
 }
 public void showWeather(){
 	SharedPreferences prefs =PreferenceManager.getDefaultSharedPreferences(this);
-	citynametext.setText(prefs.getString("cityname", ""));
+	String cityname =prefs.getString("cityname", "");
+	 if(cityname=="上城"||cityname=="下城"||cityname=="江干"||cityname=="拱墅"||cityname=="西湖"||cityname=="滨江")
+	  {
+		 cityname = "杭州";
+	  }
+	citynametext.setText(cityname);
 	temp1text.setText(prefs.getString("min", "")+"℃");
 	temp2text.setText(prefs.getString("max", "")+"℃");
 	weatherdesptext.setText(prefs.getString("txt_d", ""));

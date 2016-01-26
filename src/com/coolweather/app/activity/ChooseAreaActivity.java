@@ -87,6 +87,11 @@ protected void onCreate(Bundle savedInstanceState){
 			else if (currentlevel==LEVEL_COUNTY){
 				String countyname=countylist.get(position).getCounty_name();
 				Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+				 if(countyname.equals("上城")||countyname.equals("下城")||countyname.equals("江干")||countyname.equals("拱墅")||countyname.equals("西湖")||countyname.equals("滨江"))
+				  {
+					 countyname = "杭州";
+				  }
+				 Log.d("chooseAreaActivity", countyname);
 				intent.putExtra("county_name", countyname);
 				startActivity(intent);
 				finish();

@@ -18,6 +18,14 @@
            
            />
        <Button 
+           android:id="@+id/getlocation"
+           android:layout_height="30dp"
+           android:layout_width="30dp"
+           android:layout_centerVertical="true"
+           android:layout_marginLeft="40dp"
+           android:text="定位"
+           />
+       <Button 
            android:id="@+id/refresh_weather"
            android:layout_height="30dp"
            android:layout_width="30dp"

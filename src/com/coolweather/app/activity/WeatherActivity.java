@@ -2,6 +2,7 @@ package com.coolweather.app.activity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import com.coolweather.app.R;
 import com.coolweather.app.service.AutoUpdateService;
@@ -10,8 +11,12 @@ import com.coolweather.app.util.HttpUitl;
 import com.coolweather.app.util.Utility;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -52,8 +57,11 @@ protected void onCreate(Bundle savedInstanceState){
 	currentdate=(TextView)findViewById(R.id.current_date);
 	switchcity =(Button)findViewById(R.id.switch_city);
 	refreshweather=(Button)findViewById(R.id.refresh_weather);
+	getlocation=(Button)findViewById(R.id.getlocation);
 	switchcity.setOnClickListener(this);
 	refreshweather.setOnClickListener(this);
+	getlocation.setOnClickListener(this);
+	
 	suggest = (TextView)findViewById(R.id.suggest_view);
 	String countyname=getIntent().getStringExtra("county_name");
 	if(!TextUtils.isEmpty(countyname)){
@@ -99,6 +107,11 @@ public void onClick(View v) {
 		}
 		
 		break;
+	case R.id.getlocation:
+		Intent i = new Intent(WeatherActivity.this,GetLocationActivity.class);
+		startActivity(i);
+	//	finish();
+		break;
 	   default:
 		   break;
 	}
@@ -126,6 +139,9 @@ public void showWeather(){
 	  {
 		 cityname = "杭州";
 	  }
+	 else if (cityname.equals("海曙")||cityname.equals("江东")||cityname.equals("江北")){
+		 cityname = "宁波";
+	 }
 	citynametext.setText(cityname);
 	temp1text.setText(prefs.getString("min", "")+"℃");
 	temp2text.setText(prefs.getString("max", "")+"℃");
@@ -195,4 +211,5 @@ public void queryFromServer(String address,final String type){
 		
 	});
 }
+
 }

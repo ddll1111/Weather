@@ -91,6 +91,9 @@ protected void onCreate(Bundle savedInstanceState){
 				  {
 					 countyname = "杭州";
 				  }
+				 else if (countyname.equals("海曙")||countyname.equals("江东")||countyname.equals("江北")){
+					 countyname = "宁波";
+				 }
 				 Log.d("chooseAreaActivity", countyname);
 				intent.putExtra("county_name", countyname);
 				startActivity(intent);

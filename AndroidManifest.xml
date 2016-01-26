@@ -11,6 +11,7 @@
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 <uses-permission android:name="android.permission.GET_TASKS"/>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-sdk
         android:minSdkVersion="17"
         android:targetSdkVersion="17" />
@@ -31,6 +32,7 @@
         <activity 
             android:name="com.coolweather.app.activity.WeatherActivity">
             </activity>
+            
             <activity
                 android:name="com.coolweather.app.activity.GetLocationActivity">
                 </activity>

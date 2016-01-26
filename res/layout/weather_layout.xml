@@ -74,7 +74,12 @@
            android:textColor="#FFF"
            android:textSize="18sp"
                />
-           
+           <LinearLayout 
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+      
+           android:orientation="horizontal"
+               >
               <TextView
            android:id="@+id/weather_desp"
            android:layout_height="60dp"
@@ -83,8 +88,14 @@
            android:textColor="#FFF"
            android:textSize="40sp"
                />
-           
-          
+           <ImageView
+               android:id="@+id/weather_img"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               
+               />
+              
+          </LinearLayout>
            
            <LinearLayout
            android:layout_height="wrap_content"

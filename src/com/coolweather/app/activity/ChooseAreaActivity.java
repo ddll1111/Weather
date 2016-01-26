@@ -36,6 +36,8 @@ public static final int LEVEL_PROVINCE=0;
 public static final int LEVEL_CITY=1;
 public static final int LEVEL_COUNTY=2;
 
+private Boolean isfromweatheractivity;
+
 private ProgressDialog progressDialog;
 private TextView titletext;
 private ListView listview;
@@ -54,7 +56,8 @@ private int currentlevel ;
 protected void onCreate(Bundle savedInstanceState){
 	super.onCreate(savedInstanceState);
 	SharedPreferences prefs =PreferenceManager.getDefaultSharedPreferences(this);
-	if(prefs.getBoolean("city_selected", false)){
+	isfromweatheractivity=getIntent().getBooleanExtra("from_weather_activity", false);
+	if(prefs.getBoolean("city_select", false)&&!isfromweatheractivity ){//已选择城市，并且不是从WeatherActivity跳转，才会跳转到WeatherActivity
 		Intent intent = new Intent(this,WeatherActivity.class);
 		startActivity(intent);
 		finish();
@@ -251,14 +254,27 @@ public void closeProgressDialog(){
 //捕获Back按键，根据当前级别判断，此时返回市，县，省列表还是直接退出
 @Override
 public void onBackPressed(){
+/*
 	if(currentlevel==LEVEL_PROVINCE){
 		finish();
 	}
+	
 	else if (currentlevel==LEVEL_CITY){
 		queryProvince();
 	}
 	else if (currentlevel==LEVEL_COUNTY){
 		queryCity();
+	}
+	*/
+	if(currentlevel==LEVEL_COUNTY){
+		queryCity();
+	}
+	else {
+		if(isfromweatheractivity){
+			Intent intent = new Intent(this,WeatherActivity.class);
+			startActivity(intent);
+		}
+		finish();
 	}
 		
 }

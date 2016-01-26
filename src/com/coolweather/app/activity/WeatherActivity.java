@@ -21,6 +21,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class WeatherActivity extends Activity implements OnClickListener {
 
@@ -49,6 +50,8 @@ protected void onCreate(Bundle savedInstanceState){
 	currentdate=(TextView)findViewById(R.id.current_date);
 	switchcity =(Button)findViewById(R.id.switch_city);
 	refreshweather=(Button)findViewById(R.id.refresh_weather);
+	switchcity.setOnClickListener(this);
+	refreshweather.setOnClickListener(this);
 	suggest = (TextView)findViewById(R.id.suggest_view);
 	String countyname=getIntent().getStringExtra("county_name");
 	if(!TextUtils.isEmpty(countyname)){
@@ -114,7 +117,7 @@ public void showWeather(){
 	weatherdesptext.setText(prefs.getString("txt_d", ""));
 	publishtext.setText(prefs.getString("loc", "")+"发布");
 	currentdate.setText(prefs.getString("current_date", ""));
-	suggest.setText(prefs.getString("suggest", ""));
+//	suggest.setText(prefs.getString("suggest", ""));
 	weatherinfolayout.setVisibility(View.VISIBLE);
 	citynametext.setVisibility(View.VISIBLE);
 }
@@ -137,7 +140,6 @@ public void queryFromServer(String address,final String type){
 				//	Log.d("WeatherActivity ", "queryFromServer  - onfinish-countyname");
 					Utility.handleWeatherReponse(WeatherActivity.this, response);//解析response并保存本地
 					runOnUiThread(new Runnable(){
-
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub

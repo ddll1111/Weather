@@ -1,9 +1,16 @@
 package com.coolweather.app.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -86,11 +93,12 @@ public class Utility {
 					for(int i =0;i<jarray.length();i++){
 						JSONObject subobject = jarray.getJSONObject(i);
 						County county = new County();
-						county.setCounty_name(subobject.getString("fullname"));
-						 Log.d("Utility county", "County name"+subobject.getString("fullname"));
+						String cname = subobject.getString("fullname");
+						if(cname.endsWith("市")||cname.endsWith("县")||cname.endsWith("区")){ 
+							cname=cname.substring(0, cname.length()-1);//对县名称做处理，用户查询天气数据时匹配
+						}
+						county.setCounty_name(cname);
 						county.setCounty_code(subobject.getString("id"));
-						Log.d("Utility county", "County  code"+subobject.getString("id"));
-						Log.d("Utility county", "city id "+citycode);
 						county.setCity_id(citycode);
 						coolweatherdb.saveCounty(county);
 					
@@ -106,6 +114,68 @@ public class Utility {
 		}
 		return false;
 	}
+/*
+ * 解析服务器返回Json，并将解析出的数据存储到本地
+ */
 	
+	public static void handleWeatherReponse(Context context,String response){
+		try{
+			Log.d("Utility-handleweatherreponse", "ok");
+			JSONObject jsonobject = new JSONObject(response);
+		  JSONArray jsonarray = jsonobject.getJSONArray("HeWeather data service 3.0");
+		  JSONObject subobject = jsonarray.getJSONObject(0);//基础数据
+		  JSONObject basic = subobject.getJSONObject("basic");
+		  String cityname=basic.getString("city");//城市 ok
+		  Log.d("Utility-handleweatherreponse",cityname);
+		  JSONObject update = basic.getJSONObject("update");
+		  String loc =update.getString("loc");//更新时间 ok
+		  Log.d("Utility-handleweatherreponse",loc);
+		  JSONArray daily_forecast = subobject.getJSONArray("daily_forecast");
+		  JSONObject day1 = daily_forecast.getJSONObject(0);
+		  JSONObject cond =day1.getJSONObject("cond");
+		  Log.d("Utility-handleweatherreponse",day1+"");
+		  String txt_d =cond.getString("txt_d"); //天气信息1
+		  Log.d("Utility-handleweatherreponse",txt_d);
+		  String txt_n= cond.getString("txt_n");//天气信息2
+		  String code_d =cond.getString("code_d");//天气代码
+		  JSONObject tmp =day1.getJSONObject("tmp");
+		  String max =tmp.getString("max");//最高气温
+		  String min =tmp.getString("min");//最低气温
+		  JSONObject suggestion = subobject.getJSONObject("suggestion");
+		  JSONObject comf = suggestion.getJSONObject("comf");
+		  String suggest = comf.getString("txt") ;//建议
+		  saveWeatherInfo(context,cityname,txt_d,txt_n,code_d,max,min,loc,suggest);
+			
+		}
+		catch(Exception e){e.printStackTrace();}
+		
+	}
+	
+	/*
+	 * 将服务器返回的所有天气信息存储到SharedPreferences
+	 */
+	public static void saveWeatherInfo(Context context,String cityname,
+			String txt_d,String txt_n,String code_d,String max,String min,String loc,String suggest){
+		   SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日",Locale.CHINA);
+		   SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();				   
+		   editor.putBoolean("city_select", true);
+		   editor.putString("cityname", cityname);
+		   editor.putString("txt_d", txt_d);
+		   editor.putString("txt_n", txt_n);
+		   editor.putString("code_d", code_d);
+		   editor.putString("max", max);
+		   editor.putString("min", min);
+		   editor.putString("loc", loc);
+		   editor.putString("current_date", sdf.format(new Date()));
+		   editor.putString("suggest", suggest);
+		   editor.commit();
+				   }
+/*
+ * 解析处理服务器返回的天气代码
+ * */
+	public static void handleWeatherInfoResponse(Context context,String response){
+		
+	}
+ 
 	
 }

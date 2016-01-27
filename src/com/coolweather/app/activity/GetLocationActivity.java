@@ -42,20 +42,28 @@ public void onCreate(Bundle savedInstanceState){
 	List<String> providerList =locationManager.getProviders(true);
 	if(providerList.contains(LocationManager.GPS_PROVIDER)){
 		provider=LocationManager.GPS_PROVIDER;
+//		Log.d("Getlocationactivity", provider);
 	}
 	else if (providerList.contains(LocationManager.NETWORK_PROVIDER)){
 		provider =LocationManager.NETWORK_PROVIDER;
+//		Log.d("Getlocationactivity", provider);
 	}
 	else{
 		Toast.makeText(this, "No location provider to user", Toast.LENGTH_SHORT).show();
 		return;
 	}
 	 location =locationManager.getLastKnownLocation(provider);
+	 
+	
+	
+
 	if(location!=null){
 		getLocation();
-	//	Log.d("Weatheractivity ", "Latitude:"+location.getLatitude()+"Longitude:"+location.getLongitude());
+		 locationtext.setText("Latitude:"+location.getLatitude()+"Longitude:"+location.getLongitude());
+//		Log.d("Weatheractivity ", "Latitude:"+location.getLatitude()+"Longitude:"+location.getLongitude());
+//		locationtext.setText("not null");
 	}
-
+	
 	locationManager.requestLocationUpdates(provider, 5000, 1, locationlistener);
 	
 	
@@ -65,6 +73,7 @@ LocationListener locationlistener = new LocationListener(){
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
+		Toast.makeText(GetLocationActivity.this, "onlocationchanged", Toast.LENGTH_SHORT).show();
 	if(location !=null) {
 		getLocation();
 	}
@@ -101,13 +110,14 @@ public void getLocation(){
 		
         url.append("http://apis.map.qq.com/ws/geocoder/v1/?key=6X3BZ-XULCW-C7ZRN-RKQJ2-HJ5WT-MEBZX&get_poi=1&location="+location.getLatitude()+","+location.getLongitude());
   //      Toast.makeText(MainActivity.this, url.toString(), Toast.LENGTH_SHORT).show();
-    	locationtext.setText(location.getLatitude()+","+location.getLongitude());
+
     	Log.d("address", url.toString());
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet httpget= new HttpGet(url.toString());
      //   httpget.addHeader("Accept-Language","zh-CN");
         HttpResponse response = httpclient.execute(httpget);
         if(response.getStatusLine().getStatusCode()==200){
+        	Log.d("getLocation", "success");
         	HttpEntity entity=response.getEntity();
         	String responses = EntityUtils.toString(entity, "utf-8");
         	JSONObject jsonobject  = new JSONObject(responses);

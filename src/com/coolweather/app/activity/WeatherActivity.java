@@ -1,10 +1,18 @@
 package com.coolweather.app.activity;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 
 import com.coolweather.app.R;
+import com.coolweather.app.R.drawable;
 import com.coolweather.app.service.AutoUpdateService;
 import com.coolweather.app.util.HttpCallBackListener;
 import com.coolweather.app.util.HttpUitl;
@@ -14,6 +22,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,6 +35,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +54,7 @@ private  Button switchcity;//切换城市按钮
 private Button refreshweather ;//更新天气
 private Button getlocation;//获取地址
 private TextView suggest ;//建议
+private ImageView weatherimg;
 @Override
 protected void onCreate(Bundle savedInstanceState){
 	super.onCreate(savedInstanceState);
@@ -55,6 +67,7 @@ protected void onCreate(Bundle savedInstanceState){
 	temp1text=(TextView)findViewById(R.id.temp1);
 	temp2text=(TextView)findViewById(R.id.temp2);
 	currentdate=(TextView)findViewById(R.id.current_date);
+	weatherimg = (ImageView)findViewById(R.id.weather_img);
 	switchcity =(Button)findViewById(R.id.switch_city);
 	refreshweather=(Button)findViewById(R.id.refresh_weather);
 	getlocation=(Button)findViewById(R.id.getlocation);
@@ -152,9 +165,54 @@ public void showWeather(){
 	weatherinfolayout.setVisibility(View.VISIBLE);
 	citynametext.setVisibility(View.VISIBLE);
 	
+	//动态加载drawable中图片
+	String code_n = prefs.getString("code_d", "");
+	Class<drawable> cls = R.drawable.class;
+    try {
+        Integer value = cls.getDeclaredField("w"+code_n).getInt(null);
+           Log.v("value",value.toString());
+           weatherimg.setImageResource(value);
+    } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+
+
 	Intent i = new Intent (this,AutoUpdateService.class);
 	startService(i);
 }
+//获取网络图片
+/*
+public Bitmap getHttpBitmap(String url){
+	 URL myFileURL;  
+     Bitmap bitmap=null;  
+     try{  
+         myFileURL = new URL(url);  
+         //获得连接  
+         HttpURLConnection conn=(HttpURLConnection)myFileURL.openConnection();  
+         //设置超时时间为6000毫秒，conn.setConnectionTiem(0);表示没有时间限制  
+         conn.setConnectTimeout(6000);  
+         //连接设置获得数据流  
+         conn.setDoInput(true);  
+         //不使用缓存  
+         conn.setUseCaches(false);  
+         //这句可有可无，没有影响  
+         //conn.connect();  
+         //得到数据流  
+         InputStream is = conn.getInputStream();  
+         //解析得到图片  
+         bitmap = BitmapFactory.decodeStream(is);  
+         //关闭数据流  
+         is.close();  
+     }catch(Exception e){  
+         e.printStackTrace();  
+     }  
+       
+     return bitmap;  
+       
+ }  
+*/
+
 //查询天气代号对应的天气
 public void queryWeatherInfo(String weathercode){
 	String address="https://api.heweather.com/x3/condition?search=allcond&key=8e7c3a0b82b54b00b2a6d536de0e64ef";

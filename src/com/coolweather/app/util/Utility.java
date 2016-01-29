@@ -94,7 +94,7 @@ public class Utility {
 						JSONObject subobject = jarray.getJSONObject(i);
 						County county = new County();
 						String cname = subobject.getString("fullname");
-						if(cname.endsWith("市")||cname.endsWith("县")||cname.endsWith("区")){ 
+						if (cname.endsWith("市")||cname.endsWith("县")||cname.endsWith("区")) { 
 							cname=cname.substring(0, cname.length()-1);//对县名称做处理，用户查询天气数据时匹配
 						}
 						county.setCounty_name(cname);
@@ -125,6 +125,8 @@ public class Utility {
 		  JSONArray jsonarray = jsonobject.getJSONArray("HeWeather data service 3.0");
 		  JSONObject subobject = jsonarray.getJSONObject(0);//基础数据
 		  JSONObject basic = subobject.getJSONObject("basic");
+		 
+		  
 		  String cityname=basic.getString("city");//城市 ok
 		  
 		  Log.d("Utility-handleweatherreponse",cityname);
@@ -145,6 +147,8 @@ public class Utility {
 		  JSONObject suggestion = subobject.getJSONObject("suggestion");
 		  JSONObject comf = suggestion.getJSONObject("comf");
 		  String suggest = comf.getString("txt") ;//建议
+		  
+		  
 		  saveWeatherInfo(context,cityname,txt_d,txt_n,code_d,max,min,loc,suggest);
 			
 		}

@@ -25,6 +25,14 @@
            android:layout_marginLeft="40dp"
            android:text="定位"
            />
+       <Button
+           android:id="@+id/pullrefresh"
+           android:layout_height="30dp"
+            android:layout_width="30dp"
+            android:layout_centerVertical="true"
+           android:layout_marginLeft="70dp"
+           android:text="pull"
+           />
        <Button 
            android:id="@+id/refresh_weather"
            android:layout_height="30dp"
@@ -47,12 +55,32 @@
            />
        
        </RelativeLayout>
-       <RelativeLayout
+       
+   
+   
+  <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/fragment_rotate_header_with_view_group_frame"
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        cube_ptr:ptr_duration_to_close="200"
+        cube_ptr:ptr_duration_to_close_header="1000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.7">      
+     
+
+   
+    <RelativeLayout
            android:layout_width="match_parent"
-           android:layout_height="0dp"
-           android:layout_weight="1"
+           android:layout_height="match_parent"
+          
            android:background="#27A5F9"
            >
+   
+   
+      
        <TextView
             android:id="@+id/publish_text"
            android:layout_height="wrap_content"
@@ -148,7 +176,15 @@
            android:layout_gravity="center_horizontal"
            android:orientation="horizontal"  >
                   <TextView
-           android:id="@+id/suggest_view"
+           android:id="@+id/pm25_textview"
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+           android:layout_gravity="center_vertical"
+           android:textColor="#FFF"
+           android:textSize="18sp"
+                      />
+                      <TextView
+           android:id="@+id/qlty_textview"
            android:layout_height="wrap_content"
            android:layout_width="wrap_content"
            android:layout_gravity="center_vertical"
@@ -158,7 +194,17 @@
                    
                    </LinearLayout>
                    
+               <LinearLayout
+           android:layout_height="wrap_content"
+           android:layout_width="match_parent"
+           android:layout_gravity="center_horizontal"
+           android:orientation="horizontal"  >
+                   >
+                  
+                  </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
+
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 
 </LinearLayout>

@@ -1,5 +1,12 @@
 package com.coolweather.app.activity;
 
+
+
+import in.srain.cube.mints.base.MintsBaseActivity;
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,7 +47,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class WeatherActivity extends Activity implements OnClickListener {
+public class WeatherActivity extends MintsBaseActivity implements OnClickListener {
 
 	
 private LinearLayout weatherinfolayout;
@@ -53,8 +60,10 @@ private TextView currentdate;//当前日期
 private  Button switchcity;//切换城市按钮
 private Button refreshweather ;//更新天气
 private Button getlocation;//获取地址
+private Button pullfresh; //下拉刷新
 private TextView suggest ;//建议
 private ImageView weatherimg;
+private PtrClassicFrameLayout ptrFrame;
 @Override
 protected void onCreate(Bundle savedInstanceState){
 	super.onCreate(savedInstanceState);
@@ -71,12 +80,56 @@ protected void onCreate(Bundle savedInstanceState){
 	switchcity =(Button)findViewById(R.id.switch_city);
 	refreshweather=(Button)findViewById(R.id.refresh_weather);
 	getlocation=(Button)findViewById(R.id.getlocation);
+	pullfresh=(Button)findViewById(R.id.pullrefresh);
 	switchcity.setOnClickListener(this);
 	refreshweather.setOnClickListener(this);
 	getlocation.setOnClickListener(this);
-	
-	suggest = (TextView)findViewById(R.id.suggest_view);
-	String countyname=getIntent().getStringExtra("county_name");
+	pullfresh.setOnClickListener(this);
+	pullfresh.setVisibility(View.GONE);
+	refreshweather.setVisibility(View.GONE);
+//	suggest = (TextView)findViewById(R.id.suggest_view);
+	final String countyname=getIntent().getStringExtra("county_name");
+	 
+	//使用pulltofresh
+	ptrFrame =(PtrClassicFrameLayout)findViewById(R.id.fragment_rotate_header_with_view_group_frame);
+	ptrFrame.setLastUpdateTimeRelateObject(this);
+    ptrFrame.setPtrHandler(new PtrDefaultHandler() {
+        @Override
+        public void onRefreshBegin(PtrFrameLayout frame) {
+            frame.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                	
+                    ptrFrame.refreshComplete();
+                    
+                    if(!TextUtils.isEmpty(countyname)){
+                		//有名称就去查询天气
+                		publishtext.setText("同步中");
+                		weatherinfolayout.setVisibility(View.INVISIBLE);
+                		citynametext.setVisibility(View.INVISIBLE);
+                		queryWeathername(countyname);
+                	}
+                	else{
+                		//否则直接显示本地天气
+                		showWeather();
+                		
+                	}
+                	
+                }
+            }, 1500);
+        }
+
+        @Override
+        public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+            return true;
+        }
+    });
+    ptrFrame.setVisibility(View.VISIBLE);
+    
+    
+    /*
+     * 关闭重进程序后用于加载已有天气数据
+     */
 	if(!TextUtils.isEmpty(countyname)){
 		//有名称就去查询天气
 		publishtext.setText("同步中");
@@ -89,6 +142,7 @@ protected void onCreate(Bundle savedInstanceState){
 		showWeather();
 		
 	}
+	
 	
 }
 @Override
@@ -125,28 +179,34 @@ public void onClick(View v) {
 		startActivity(i);
 	//	finish();
 		break;
+
 	   default:
 		   break;
 	}
 }
 //查询县名称对应的天气代号
 public void queryWeathername(String countyname){
-	try {
+	
 		 if(countyname.equals("上城")||countyname.equals("下城")||countyname.equals("江干")||countyname.equals("拱墅")||countyname.equals("西湖")||countyname.equals("滨江"))
 		  {
 			 countyname = "杭州";
 		  }
-		String address = "https://api.heweather.com/x3/weather?key=8e7c3a0b82b54b00b2a6d536de0e64ef&city="+URLEncoder.encode(new String ( countyname.toString().getBytes("UTF-8") ), "UTF-8") ;
-		queryFromServer(address,"countyname");
-		Log.d("queryweather", countyname);
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+		String address;
+		try {
+			address = "https://api.heweather.com/x3/weather?key=8e7c3a0b82b54b00b2a6d536de0e64ef&city="+URLEncoder.encode(new String ( countyname.toString().getBytes("UTF-8") ), "UTF-8");
+			queryFromServer(address,"countyname");
+			Log.d("queryweather", countyname);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	
 	
 }
 public void showWeather(){
 	SharedPreferences prefs =PreferenceManager.getDefaultSharedPreferences(this);
+ if(prefs!=null) {
 	String cityname =prefs.getString("cityname", "");
 	 if(cityname=="上城"||cityname=="下城"||cityname=="江干"||cityname=="拱墅"||cityname=="西湖"||cityname=="滨江")
 	  {
@@ -177,7 +237,7 @@ public void showWeather(){
         e.printStackTrace();
     }
 
-
+ }
 	Intent i = new Intent (this,AutoUpdateService.class);
 	startService(i);
 }
@@ -269,5 +329,6 @@ public void queryFromServer(String address,final String type){
 		
 	});
 }
+
 
 }
